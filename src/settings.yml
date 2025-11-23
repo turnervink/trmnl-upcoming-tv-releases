@@ -1,0 +1,23 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+polling_url: "{% assign ids = series_ids | split: \",\" %}\r\n{% for id in ids %}https://api4.thetvdb.com/v4/series/{{ id }}/nextAired\r\n{% endfor %}\r\n"
+polling_headers: authorization=Bearer {{api_key}}
+polling_body: ''
+id: 181958
+custom_fields:
+- keyname: api_key
+  field_type: password
+  name: API Key
+  description: <a href="https://www.thetvdb.com">TheTVDB.com API key</a>
+  placeholder: s3cret!
+- keyname: series_ids
+  field_type: multi_string
+  name: Series IDs
+  description: TheTVDB.com series IDs to monitor. Numbers only, do not include the "ID" prefix.
+  placeholder: 72173
+name: Upcoming TV Episodes
+refresh_interval: 360

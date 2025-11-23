@@ -1,0 +1,25 @@
+<div class="layout">
+  <div class="grid grid--cols-3">
+    {% for entry in releases_list limit:3 %}
+    {% assign parts = entry | split: "|||" %}
+    {% assign date = parts[0] %}
+    {% assign title = parts[1] %}
+    {% assign cover = parts[2] %}
+    <div class="grid">
+      <div class="col">
+        <img class="image image-dither image--contain rounded" src="{{ cover }}">
+      </div>
+      <div class="col col--span-2">
+        {% render "show_item", title: title, nextAired: date, max_title_lines: 3, tdy: today, tmrw: tomorrow %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<div class="title_bar">
+  <img class="image" src="{{ icon_data }}">
+  <span class="title">Upcoming TV Episodes</span>
+  <span class="instance">{{ today | date: "%e %A" }}</span>
+</div>

@@ -1,0 +1,56 @@
+{% assign today = trmnl.system.timestamp_utc | plus: trmnl.user.utc_offset | date: "%Y-%m-%d" %}
+{% assign tomorrow = trmnl.system.timestamp_utc | plus: trmnl.user.utc_offset | plus: 86400 | date: "%Y-%m-%d" %}
+
+{% assign series_ids_array = trmnl.plugin_settings.custom_fields_values.series_ids | split: "," %}
+{% assign api_responses = null | sort %}
+{% for id in series_ids_array %}
+{% assign idx = forloop.index0 %}
+{% assign var_name = "IDX_" | append: idx %}
+{% assign response = [var_name] | sort %}
+{% assign api_responses = api_responses | concat: response %}
+{% endfor %}
+
+{% assign releases_list = false %}
+
+{% for response in api_responses %}
+{% assign next_aired = response.data.nextAired %}
+{% if next_aired and next_aired != "" %}
+{% assign aired_date = next_aired | date: "%Y-%m-%d" %}
+{% assign title = response.data.name | default: "Unknown" %}
+{% assign image_url = response.data.image | default: "" %}
+{% assign entry = aired_date | append: "|||" | append: title | append: "|||" | append: image_url %}
+{% if releases_list == false %}
+{% assign releases_list = entry | split: ',' %}
+{% else %}
+{% assign tmpEntry = entry | split: ',' %}
+{% assign releases_list = releases_list | concat: tmpEntry %}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% if releases_list == false %}
+{% assign releases_list = "" | split: "" %}
+{% endif %}
+
+{% assign releases_list = releases_list | sort %}
+
+{% assign icon_data = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSIyNHB4IiBmaWxsPSIjMWYxZjFmIj48cGF0aCBkPSJNMzIwLTEyMHYtODBIMTYwcS0zMyAwLTU2LjUtMjMuNVQ4MC0yODB2LTQ4MHEwLTMzIDIzLjUtNTYuNVQxNjAtODQwaDY0MHEzMyAwIDU2LjUgMjMuNVQ4ODAtNzYwdjQ4MHEwIDMzLTIzLjUgNTYuNVQ4MDAtMjAwSDY0MHY4MEgzMjBaTTE2MC0yODBoNjQwdi00ODBIMTYwdjQ4MFptMCAwdi00ODAgNDgwWiIvPjwvc3ZnPg==" %}
+
+{% template show_item %}
+<div class="grid grid--cols-1">
+  <div class="row">
+    {% if nextAired == tdy %}
+    <p class="label label--inverted">Today</p>
+    {% elsif nextAired == tmrw %}
+    <p class="label label--outline">Tomorrow</p>
+    {% else %}
+    <p class="label label--outline">{{ nextAired | date: "%e" }}</p>
+    <p class="label ml--2">{{ nextAired | date: "%A" }}</p>
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <p class="title" data-clamp="{{ max_title_lines }}">{{ title }}</p>
+  </div>
+</div>
+{% endtemplate %}

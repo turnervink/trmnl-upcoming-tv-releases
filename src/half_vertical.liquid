@@ -1,0 +1,41 @@
+<div class="layout">
+  <div class="grid grid--cols-1">
+    {% for entry in releases_list limit:3 %}
+    {% assign parts = entry | split: "|||" %}
+    {% assign date = parts[0] %}
+    {% assign title = parts[1] %}
+    {% assign cover = parts[2] %}
+    <div class="row">
+      <div class="grid">
+        <div class="col" style="width:75px;">
+          <img class="image image-dither image--contain rounded" src="{{ cover }}">
+        </div>
+        <div class="col col--span-3">
+          <div class="grid grid--cols-1">
+            <div class="row">
+              {% if date == today %}
+              <p class="label label--inverted">Today</p>
+              {% elsif date == tomorrow %}
+              <p class="label label--outline">Tomorrow</p>
+              {% else %}
+              <p class="label label--outline" style="min-width:25px;">{{ date | date: "%e" }}</p>
+              <p class="label ml--2">{{ date | date: "%A" }}</p>
+              {% endif %}
+            </div>
+
+            <div class="row">
+              <p class="title" data-clamp="2">{{ title }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="title_bar">
+  <img class="image" src="{{ icon_data }}">
+  <span class="title">Upcoming TV Episodes</span>
+  <span class="instance">{{ today | date: "%e %A" }}</span>
+</div>
