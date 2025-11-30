@@ -20,9 +20,9 @@
 {% assign image_url = response.data.image | default: "" %}
 {% assign entry = aired_date | append: "|||" | append: title | append: "|||" | append: image_url %}
 {% if releases_list == false %}
-{% assign releases_list = entry | split: ',' %}
+{% assign releases_list = entry | split: "|ENTRY|" %}
 {% else %}
-{% assign tmpEntry = entry | split: ',' %}
+{% assign tmpEntry = entry | split: "|ENTRY|" %}
 {% assign releases_list = releases_list | concat: tmpEntry %}
 {% endif %}
 {% endif %}
